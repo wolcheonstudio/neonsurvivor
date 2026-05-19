@@ -1,0 +1,1113 @@
+/* Root Variables */
+:root {
+  --bg-dark: #010208;
+  --glass-bg: rgba(1, 2, 8, 0.7);
+  --glass-border: rgba(34, 211, 238, 0.4);
+  --accent-cyan: #22d3ee;
+  --accent-pink: #ef4444;
+  --accent-amber: #fbbf24;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+}
+
+/* Global Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+/* Hero Section */
+#hero { padding: 60px 0; min-height: 70vh; display: flex; align-items: center; }
+.hero-content { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.hero-text h1 { font-weight: 900; letter-spacing: -3px; }
+.hero-sub { font-size: 1.2rem; color: var(--text-secondary); margin: 25px 0 35px; line-height: 1.5; }
+
+.btn {
+  padding: 14px 35px; border-radius: 50px; font-weight: 700; text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; letter-spacing: 1px; display: inline-block;
+  cursor: pointer; border: none;
+}
+.btn:hover { transform: translateY(-3px); filter: brightness(1.1); box-shadow: 0 10px 25px rgba(34, 211, 238, 0.4); }
+.btn:active { transform: translateY(-1px) scale(0.98); }
+.btn-primary { background: var(--accent-cyan); color: var(--bg-dark); box-shadow: 0 0 25px rgba(34, 211, 238, 0.4); }
+
+footer a { transition: color 0.2s; }
+footer a:hover { color: var(--accent-cyan) !important; }
+.btn-outline { border: 2px solid var(--accent-cyan); color: var(--accent-cyan); background: transparent; }
+.btn-outline:hover { background: var(--accent-cyan); color: var(--bg-dark); }
+
+.hero-image { display: flex; justify-content: center; }
+.floating { animation: float 5s ease-in-out infinite; max-width: 100%; border-radius: 20px; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+/* Game Section */
+#game-section {
+  position: relative !important;
+  width: 100vw !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #000;
+  overflow: hidden;
+}
+
+#game-wrapper {
+  position: relative !important; 
+  width: 100vw !important;
+  height: auto !important;
+  background: #000;
+  overflow: hidden;
+  border: none;
+}
+canvas { width: 100%; height: 100%; display: block; touch-action: none !important; }
+
+/* XP Bar */
+#xp-bar-container-new {
+  width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;
+  margin-top: 5px;
+}
+#xpFill { height: 100%; background: linear-gradient(90deg, var(--accent-cyan), #d946ef); width: 0%; transition: width 0.3s; }
+
+/* HUD - Top Center Progress Bars (HP & XP only, floating ultra-clean!) */
+#hud-center-pill {
+  position: absolute !important; top: 20px; left: 50%; transform: translateX(-50%);
+  background: transparent; border: none;
+  padding: 0; border-radius: 0; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  z-index: 1100; backdrop-filter: none; box-shadow: none;
+  width: 260px;
+}
+
+/* Integrated HP Bar at Top */
+#hp-bar-top-integrated {
+    width: 100%; height: 12px; background: rgba(0,0,0,0.65);
+    border-radius: 6px; overflow: hidden; position: relative; border: 1.5px solid rgba(34, 211, 238, 0.4);
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.15);
+}
+#hpFill { height: 100%; background: linear-gradient(90deg, #ef4444, #f87171); transition: width 0.3s; }
+#hpText { 
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+    font-size: 0.65rem; font-weight: 900; color: #fff; text-shadow: 0 0 4px #000;
+    letter-spacing: 0.5px;
+}
+
+/* General pill-row inside Left Group */
+.pill-row { 
+  display: flex; align-items: center; gap: 15px;
+  background: var(--glass-bg); border: 2px solid var(--glass-border);
+  padding: 8px 20px; border-radius: 20px;
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.15);
+  backdrop-filter: blur(10px);
+}
+.pill-item { font-weight: 800; font-family: 'Outfit'; color: #fff; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+.pill-sep { width: 2px; height: 18px; background: var(--glass-border); }
+.pill-icon-btn { background: none; border: none; color: var(--accent-cyan); cursor: pointer; font-size: 1.1rem; transition: transform 0.2s; }
+.pill-icon-btn:hover { transform: scale(1.15); }
+
+/* HUD visibility - 오직 게임 플레이 중에만 표시 */
+#hud-center-pill, #hud-left-group { display: none !important; }
+body.playing #hud-center-pill, body.playing #hud-left-group { display: flex !important; }
+
+/* Left HUD Group (Audio, Time, Coins, Stats Panel) - Scaled down to prevent covering the PC screen! */
+#hud-left-group { 
+    position: absolute !important; top: 20px; left: 20px; 
+    z-index: 1100; display: flex; flex-direction: column; gap: 10px; 
+    transform: scale(0.72) !important;
+    transform-origin: top left !important;
+}
+
+.audio-box { 
+    display: flex; flex-direction: column; gap: 12px; 
+    background: rgba(1, 2, 8, 0.85); backdrop-filter: blur(12px);
+    padding: 18px; border-radius: 16px; border: 1px solid rgba(34, 211, 238, 0.3);
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
+}
+
+.stats-box { display: flex; flex-direction: column; gap: 8px; }
+.stat-pill {
+    background: rgba(1, 2, 8, 0.85); border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 18px; border-radius: 12px; font-weight: 900; font-size: 0.85rem;
+    color: var(--accent-cyan); width: fit-content; backdrop-filter: blur(8px);
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.1);
+}
+.stat-pill.atk { border-left: 4px solid var(--accent-cyan); }
+.stat-pill.spd { border-left: 4px solid var(--accent-amber); color: var(--accent-amber); }
+
+/* Modals */
+.modal { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; 
+    background: rgba(0,0,0,0.95); display: flex; align-items: flex-start; /* 중앙 정렬 대신 상단 정렬 */
+    justify-content: center; z-index: 9999; transition: opacity 0.3s; 
+    overflow-y: auto; padding: 40px 0; /* 전체 모달에 스크롤 허용 */
+}
+.modal.hidden { opacity: 0; pointer-events: none; display: none !important; }
+.modal-content, .panel { 
+    background: rgba(1, 2, 8, 0.98); padding: 15px; border-radius: 20px; border: 2px solid var(--accent-cyan); 
+    box-shadow: 0 0 50px rgba(34, 211, 238, 0.4); width: 95%; max-width: 480px; text-align: center; 
+    margin-bottom: 10px;
+}
+.upgrade-btn, .premium-upgrade-btn { margin-bottom: 6px !important; }
+
+/* Audio Controls Detail */
+.control-group { display: flex; align-items: center; gap: 12px; color: #fff; font-size: 0.85rem; font-weight: 900; }
+.control-group input[type="range"] { flex: 1; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; appearance: none; outline: none; }
+.control-group input[type="range"]::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; background: var(--accent-cyan); border-radius: 50%; cursor: pointer; box-shadow: 0 0 8px var(--accent-cyan); }
+
+.audio-btn, .icon-btn { background: none; border: none; color: #fff; cursor: pointer; font-size: 1.2rem; transition: transform 0.2s; }
+.audio-btn:hover, .icon-btn:hover { transform: scale(1.1); }
+
+/* Body Lock */
+body.lock-scroll { overflow: hidden; height: 100vh; }
+
+/* Game Over Panel Specifics */
+.rank-section { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; text-align: left; }
+.rank-column h3 { font-size: 0.9rem; color: var(--accent-cyan); margin-bottom: 10px; border-bottom: 1px solid var(--glass-border); padding-bottom: 5px; }
+.rank-item { font-size: 0.85rem; margin-bottom: 5px; display: flex; justify-content: space-between; opacity: 0.9; }
+.best-section, .current-record { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; margin-bottom: 10px; font-weight: 700; font-size: 0.95rem; }
+.current-record { border: 1px solid var(--accent-pink); color: var(--accent-pink); }
+
+/* Shop Layout & Cards */
+.shop-tabs { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; }
+.tab-btn { 
+    background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.6);
+    padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; transition: all 0.2s;
+}
+.tab-btn.active { background: var(--accent-cyan); color: var(--bg-dark); border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(34, 211, 238, 0.4); }
+
+.shop-grid { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; padding-bottom: 20px; }
+.shop-card, .weapon-card { 
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); 
+    padding: 18px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; 
+    cursor: pointer; transition: all 0.2s; position: relative;
+}
+.shop-card:hover, .weapon-card:hover { background: rgba(34, 211, 238, 0.1); border-color: var(--accent-cyan); transform: translateY(-2px); }
+
+.weapon-card.ultimate { 
+    border: 2px solid #f59e0b; background: rgba(245, 158, 11, 0.05); 
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.3); 
+}
+.weapon-card.ultimate:hover { box-shadow: 0 0 25px rgba(245, 158, 11, 0.5); }
+
+.card-info { text-align: left; flex: 1; }
+.card-price { 
+    background: var(--accent-cyan); color: var(--bg-dark); padding: 8px 15px; 
+    border-radius: 10px; font-weight: 900; font-size: 0.9rem; min-width: 80px; text-align: center;
+}
+.ultimate .card-price, .weapon-card.premium .card-price { background: #f59e0b; }
+
+.hidden { display: none !important; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .shop-grid { grid-template-columns: 1fr; }
+  .modal-content { width: 95vw; padding: 20px; }
+}
+
+/* Features */
+#features { padding: 80px 0; background: #05070a; }
+.section-title { text-align: center; margin-bottom: 50px; }
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+.feature-card { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 35px; border-radius: 28px; transition: 0.3s; }
+.feature-img-wrap { width: 100%; height: 150px; border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+.feature-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Boss Warning Overlay */
+#bossWarning {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(255, 0, 0, 0.15); z-index: 99999; pointer-events: none;
+    animation: warning-flash 1s infinite alternate;
+}
+.warning-text {
+    font-size: 5rem; font-weight: 900; color: #ff0000; letter-spacing: 15px;
+    text-shadow: 0 0 30px #ff0000, 0 0 60px #ff0000;
+}
+.warning-sub { font-size: 1.5rem; color: #fff; font-weight: 700; margin-top: 10px; letter-spacing: 5px; }
+
+@keyframes warning-flash {
+    0% { opacity: 0.3; background: rgba(255, 0, 0, 0.05); }
+    100% { opacity: 1; background: rgba(255, 0, 0, 0.25); }
+}
+
+/* Start Modal Embedded inside game-wrapper */
+#startModal {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(1, 2, 8, 0.85) !important;
+    backdrop-filter: blur(10px);
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 1200 !important;
+    transition: opacity 0.3s;
+}
+#startModal.hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    display: none !important;
+}
+
+/* Pause Overlay */
+#pauseOverlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(1, 2, 8, 0.85); backdrop-filter: blur(15px);
+    display: flex; align-items: center; justify-content: center; z-index: 9999;
+}
+.pause-content {
+    background: var(--glass-bg); border: 2px solid var(--accent-cyan);
+    padding: 40px; border-radius: 30px; text-align: center;
+    box-shadow: 0 0 50px rgba(34, 211, 238, 0.3); width: 90%; max-width: 400px;
+}
+.pause-content h1 { font-size: 4rem; margin-bottom: 5px; color: var(--accent-cyan); }
+.pause-content .sub { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 30px; font-weight: 700; letter-spacing: 2px; }
+
+/* Glitch Effect */
+.glitch { position: relative; }
+.glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.glitch::before { left: 2px; text-shadow: -2px 0 #ff00c1; animation: glitch-1 2s infinite linear alternate-reverse; }
+.glitch::after { left: -2px; text-shadow: 2px 0 #00fff9; animation: glitch-2 2s infinite linear alternate-reverse; }
+@keyframes glitch-1 { 0% { clip: rect(20px, 999px, 10px, 0); } 100% { clip: rect(80px, 999px, 90px, 0); } }
+@keyframes glitch-2 { 0% { clip: rect(50px, 999px, 60px, 0); } 100% { clip: rect(10px, 999px, 30px, 0); } }
+
+/* Language Selector Buttons */
+.lang-btn {
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 900;
+  font-family: 'Outfit', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  background: rgba(1, 2, 8, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-secondary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  font-size: 0.9rem;
+}
+
+.lang-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-cyan);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+}
+
+.lang-btn.active {
+  background: rgba(34, 211, 238, 0.2);
+  border: 1.5px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  text-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
+  box-shadow: inset 0 0 8px rgba(34, 211, 238, 0.3), 0 0 15px rgba(34, 211, 238, 0.2);
+}
+
+/* Custom Glowing Neon Scrollbar for Shop */
+#shopListContainer::-webkit-scrollbar {
+  width: 6px;
+}
+#shopListContainer::-webkit-scrollbar-track {
+  background: rgba(1, 2, 8, 0.5);
+  border-radius: 10px;
+}
+#shopListContainer::-webkit-scrollbar-thumb {
+  background: var(--accent-cyan);
+  border-radius: 10px;
+  box-shadow: 0 0 10px var(--accent-cyan);
+}
+#shopListContainer::-webkit-scrollbar-thumb:hover {
+  background: #fff;
+  box-shadow: 0 0 15px #fff;
+}
+
+/* ========================================================
+   🎮 CYBER-NEON MOBILE TOUCH CONTROLS OVERLAY
+   ======================================================== */
+#mobile-controls {
+  position: fixed !important;
+  bottom: env(safe-area-inset-bottom, 10px) !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 180px !important;
+  pointer-events: none;
+  z-index: 10000 !important;
+  display: none !important;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 35px 25px 35px !important;
+  box-sizing: border-box;
+}
+
+
+
+#joystick-zone {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: auto;
+  user-select: none;
+  touch-action: none;
+}
+
+#joystick-base {
+  width: 120px;
+  height: 120px;
+  background: rgba(1, 2, 8, 0.4);
+  border: 2px solid rgba(34, 211, 238, 0.35);
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.15), inset 0 0 15px rgba(34, 211, 238, 0.05);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#joystick-stick {
+  width: 48px;
+  height: 48px;
+  background: radial-gradient(circle, #22d3ee 0%, #0891b2 100%);
+  border: 1.5px solid #fff;
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: 0 0 15px var(--accent-cyan);
+  cursor: pointer;
+  user-select: none;
+}
+
+#mobile-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
+  pointer-events: auto;
+}
+
+.touch-btn {
+  background: rgba(1, 2, 8, 0.7);
+  border: 2px solid rgba(244, 63, 94, 0.4);
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  font-size: 0.95rem;
+  padding: 10px 22px;
+  border-radius: 20px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  touch-action: none;
+  letter-spacing: 1px;
+}
+
+.touch-btn:active {
+  transform: scale(0.9);
+}
+
+#btn-touch-swap {
+  border-color: rgba(34, 211, 238, 0.5);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.1);
+}
+#btn-touch-swap:active {
+  background: rgba(34, 211, 238, 0.25);
+  box-shadow: 0 0 18px rgba(34, 211, 238, 0.35);
+}
+
+#btn-touch-focus {
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.1);
+}
+#btn-touch-focus:active {
+  background: rgba(245, 158, 11, 0.25);
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.35);
+}
+#btn-touch-focus.active-focus {
+  background: rgba(245, 158, 11, 0.4);
+  border-color: #f59e0b;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
+}
+
+#btn-touch-heal {
+  border-color: rgba(34, 197, 94, 0.55);
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.1);
+  padding: 14px 28px;
+  font-size: 1.05rem;
+  border-radius: 25px;
+}
+#btn-touch-heal:active {
+  background: rgba(34, 197, 94, 0.25);
+  box-shadow: 0 0 18px rgba(34, 197, 94, 0.35);
+}
+
+/* Automatic responsive toggle: only show virtual touch buttons on touch devices */
+@media (hover: hover) and (pointer: fine) {
+  #mobile-controls {
+    display: none !important;
+  }
+}
+
+/* ========================================================
+   🎮 GLOBAL FULL-SCREEN GAMEPLAY STYLES (PC & MOBILE)
+   ======================================================== */
+html.playing,
+body.playing {
+  overflow: hidden !important;
+  height: 100vh !important;
+  width: 100vw !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.playing #hero,
+body.playing #features,
+body.playing footer {
+  display: none !important;
+}
+
+body.playing #game-section {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  z-index: 9998 !important;
+  background: #000 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  transform: none !important;
+}
+
+body.playing #game-wrapper {
+  position: relative !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  background: #000 !important;
+  overflow: hidden !important;
+}
+
+body.playing canvas {
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  object-fit: fill !important;
+}
+
+/* Ensure absolute elements like HUD are perfectly placed in the fullscreen wrapper */
+body.playing #hud-left-group {
+  position: absolute !important;
+  top: 20px !important;
+  left: 20px !important;
+  z-index: 1100 !important;
+}
+
+body.playing #hud-center-pill {
+  position: absolute !important;
+  top: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 1100 !important;
+}
+
+/* ========================================================
+   🔄 MOBILE ROTATION (LANDSCAPE) WARNING OVERLAY
+   ======================================================== */
+#orientation-warning {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: #010208;
+  z-index: 99999;
+  color: #fff;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.warning-content {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.warning-icon {
+  font-size: 4rem;
+  animation: rotateScreen 2.5s infinite ease-in-out;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+}
+
+.warning-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.warning-desc {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+@keyframes rotateScreen {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(-90deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Show rotation warning in Portrait mode on mobile/tablet devices */
+@media (max-width: 1024px) and (orientation: portrait) {
+  #orientation-warning {
+    display: flex !important;
+  }
+}
+
+/* Hide cluttering BGM/SFX sliders on mobile screens during gameplay */
+@media (max-width: 1024px) {
+  body.playing #hud-left-group {
+    display: none !important;
+  }
+}
+
+/* ========================================================
+   🌐 MOBILE RESPONSIVE LANDING PAGE (HERO SECTION)
+   ======================================================== */
+@media (max-width: 1024px) {
+  #hero {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+    padding: 30px 15px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  
+  .hero-content {
+    grid-template-columns: 1fr !important; /* Stack vertically on phones */
+    gap: 25px !important;
+    text-align: center !important;
+    padding: 0 !important;
+  }
+
+  .hero-text {
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+
+  /* Shrink landing typography dramatically to prevent text wrap or overflows */
+  .hero-text h1 {
+    font-size: 2.8rem !important; 
+    line-height: 1.1 !important;
+  }
+  .hero-text h1.glitch[data-text="GUNSTAR"] {
+    font-size: 3.2rem !important;
+  }
+
+  .hero-sub {
+    font-size: 1.05rem !important;
+    margin: 15px 0 !important;
+  }
+  .hero-sub br {
+    display: none !important; /* Flatten text lines */
+  }
+
+  .hero-image {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-top: 20px !important;
+  }
+  .hero-image img {
+    max-width: 250px !important;
+    transform: none !important;
+    border-radius: 20px !important;
+    box-shadow: 0 0 35px rgba(34, 211, 238, 0.3) !important;
+  }
+  
+  .btn-group {
+    justify-content: center !important;
+    width: 100% !important;
+    gap: 15px !important;
+  }
+  .btn-group a {
+    padding: 14px 28px !important;
+    font-size: 0.95rem !important;
+  }
+}
+
+/* ========================================================
+   🧹 MOBILE HUD LAYOUT & TOUCH SIZING OPTIMIZATIONS
+   ======================================================== */
+@media (max-width: 1024px) {
+  #hud-center-pill {
+    top: 8px !important;
+    padding: 6px 14px !important;
+    gap: 5px !important;
+    border-radius: 20px !important;
+  }
+  
+  .pill-row {
+    gap: 8px !important;
+  }
+
+  .pill-item {
+    font-size: 0.75rem !important;
+  }
+
+  .pill-sep {
+    height: 12px !important;
+  }
+
+  #hp-bar-top-integrated {
+    min-width: 140px !important;
+    height: 8px !important;
+    border-radius: 4px !important;
+  }
+
+  #hpText {
+    font-size: 0.5rem !important;
+    top: 50% !important;
+  }
+  
+  /* Scale down mobile touch controls overlay slightly for a tighter combat view */
+  #mobile-controls {
+    height: 170px !important;
+    padding: 0 20px 15px 20px !important;
+  }
+  
+  #joystick-zone {
+    width: 110px !important;
+    height: 110px !important;
+  }
+  #joystick-base {
+    width: 90px !important;
+    height: 90px !important;
+  }
+  #joystick-stick {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  
+  .touch-btn {
+    font-size: 0.82rem !important;
+    padding: 7px 16px !important;
+    border-radius: 14px !important;
+  }
+  #btn-touch-heal {
+    padding: 9px 20px !important;
+    font-size: 0.9rem !important;
+    border-radius: 16px !important;
+  }
+}
+
+/* Level Up Horizontal Grid Layout */
+.upgrade-row-layout {
+  display: flex;
+  flex-direction: column; /* Vertical stack on desktop by default to ensure perfect fit */
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 8px;
+}
+.upgrade-row-layout > button, .upgrade-row-layout > div {
+  width: 100%;
+  min-width: 0;
+  margin: 0 !important;
+}
+
+@media (max-width: 1024px) or (max-height: 480px) {
+  .upgrade-row-layout {
+    flex-direction: row; /* Horizontal flow only on smaller or landscape mobile/tablet viewports */
+  }
+  .upgrade-row-layout > button, .upgrade-row-layout > div {
+    flex: 1;
+  }
+}
+
+@media (max-height: 480px) {
+  .modal {
+    padding: 10px 0 !important;
+    align-items: center !important; /* Center modal vertically on tight screens */
+  }
+  .modal-content, .panel {
+    padding: 12px 18px !important;
+    border-radius: 16px !important;
+    max-width: 92% !important;
+    box-shadow: 0 0 30px rgba(34, 211, 238, 0.25) !important;
+  }
+  .modal-content h2, .panel h2 {
+    font-size: 1.1rem !important;
+    margin-bottom: 8px !important;
+  }
+  .upgrade-btn {
+    padding: 6px 4px !important;
+    word-break: keep-all !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+  }
+  .upgrade-btn div {
+    font-size: 0.85rem !important;
+  }
+  .upgrade-btn div:last-child {
+    font-size: 0.68rem !important;
+    line-height: 1.15;
+  }
+  .premium-upgrade-btn {
+    padding: 8px 4px !important;
+    word-break: keep-all !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+  }
+  .premium-upgrade-btn div {
+    font-size: 0.85rem !important;
+  }
+  .premium-upgrade-btn div:last-child {
+    font-size: 0.68rem !important;
+    line-height: 1.15;
+  }
+}
+
+/* PC (Desktop) defaults - Keep HUD visible on PC gameplay */
+body.playing #hud-center-pill {
+  display: flex !important;
+}
+body.playing #hud-left-group {
+  display: flex !important;
+}
+
+/* Mobile-only Fullscreen, Locked Scroll and Mobile Sound Button Styles */
+@media (max-width: 1024px) {
+  body.playing #landingPage, 
+  body.playing #features, 
+  body.playing footer {
+    display: none !important;
+  }
+
+  body.playing #game-section {
+    height: 100dvh !important;
+    width: 100vw !important;
+    max-height: 100dvh !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    z-index: 9999 !important;
+    overflow: hidden !important;
+    background: #000 !important;
+  }
+
+  body.playing #game-wrapper {
+    height: 100dvh !important;
+    width: 100vw !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    overflow: hidden !important;
+    background: #000 !important;
+  }
+
+  body.playing canvas {
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: fill !important;
+  }
+
+  /* Move Stats and Pill-row indicators cleanly to the Top-Left and make them ultra-compact! */
+  body.playing #hud-left-group {
+    display: flex !important;
+    top: 10px !important;
+    left: 10px !important;
+    gap: 4px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    transform: none !important;
+  }
+  body.playing #hud-left-group .audio-box {
+    display: none !important;
+  }
+  /* Ultra-compact horizontal/vertical row of indicators on mobile */
+  body.playing #hud-left-group .pill-row {
+    background: rgba(1, 2, 8, 0.75) !important;
+    border: 1px solid rgba(34, 211, 238, 0.3) !important;
+    padding: 4px 10px !important;
+    border-radius: 12px !important;
+    gap: 6px !important;
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.1) !important;
+    backdrop-filter: blur(8px) !important;
+    width: fit-content !important;
+  }
+  body.playing #hud-left-group .pill-item {
+    font-size: 0.65rem !important;
+    gap: 2px !important;
+  }
+  body.playing #hud-left-group .pill-sep {
+    height: 10px !important;
+    background: rgba(34, 211, 238, 0.3) !important;
+  }
+  body.playing #hud-left-group .pill-icon-btn {
+    font-size: 0.75rem !important;
+  }
+  body.playing #hud-left-group .stats-box {
+    display: flex !important;
+    flex-direction: row !important; /* Stack horizontally to occupy zero vertical space! */
+    gap: 4px !important;
+    margin-top: 0 !important;
+  }
+  body.playing .stat-pill {
+    padding: 3px 6px !important;
+    font-size: 0.62rem !important;
+    border-radius: 5px !important;
+    width: fit-content !important;
+  }
+
+  /* Compressed Mobile Pause Screen - fits beautifully in landscape height! */
+  body.playing #pauseOverlay {
+    overflow-y: auto !important;
+    padding: 20px 0 !important;
+  }
+  body.playing .pause-content {
+    padding: 15px 25px !important;
+    border-radius: 20px !important;
+    max-width: 320px !important;
+    box-shadow: 0 0 25px rgba(34, 211, 238, 0.25) !important;
+  }
+  body.playing .pause-content h1 {
+    font-size: 1.8rem !important;
+    margin-bottom: 2px !important;
+  }
+  body.playing .pause-content .sub {
+    font-size: 0.85rem !important;
+    margin-bottom: 12px !important;
+  }
+  body.playing .pause-content .audio-box {
+    margin: 10px 0 !important;
+    padding: 10px 12px !important;
+    gap: 8px !important;
+    border-radius: 10px !important;
+  }
+  body.playing .pause-content .control-group span {
+    font-size: 0.75rem !important;
+  }
+  body.playing .pause-content .control-group input[type="range"] {
+    width: 65% !important;
+  }
+  body.playing .pause-content .btn {
+    padding: 8px 15px !important;
+    font-size: 0.85rem !important;
+  }
+  body.playing #resumeBtn {
+    margin-bottom: 8px !important;
+  }
+
+  /* Compressed Mobile Shop Screen with Two-Column Grid - fits beautifully in landscape height! */
+  body.playing .shop-content {
+    padding: 15px 20px !important;
+    border-radius: 20px !important;
+    max-width: 90% !important;
+    max-height: 94vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+  }
+  body.playing .shop-content h2 {
+    font-size: 1.2rem !important;
+    margin-bottom: 5px !important;
+  }
+  body.playing .shop-tabs {
+    margin-bottom: 12px !important;
+    gap: 6px !important;
+  }
+  body.playing .shop-tabs .tab-btn {
+    padding: 6px 12px !important;
+    font-size: 0.8rem !important;
+    border-radius: 8px !important;
+  }
+  body.playing #shopListContainer {
+    max-height: 48vh !important;
+    overflow-y: auto !important;
+  }
+  body.playing .shop-grid {
+    grid-template-columns: 1fr 1fr !important; /* Two items side-by-side! */
+    gap: 8px !important;
+    padding-bottom: 5px !important;
+  }
+  body.playing .shop-card, body.playing .weapon-card {
+    padding: 8px 12px !important;
+    border-radius: 10px !important;
+  }
+  body.playing .shop-card .card-info .title, body.playing .weapon-card .card-info .title {
+    font-size: 0.85rem !important;
+  }
+  body.playing .shop-card .card-info .desc, body.playing .weapon-card .card-info .desc {
+    font-size: 0.7rem !important;
+    opacity: 0.7 !important;
+  }
+  body.playing .shop-card .card-info .owned-info, body.playing .weapon-card .card-info .owned-info {
+    font-size: 0.65rem !important;
+  }
+  body.playing #closeShopBtn {
+    margin-top: 10px !important;
+    padding: 10px !important;
+    font-size: 0.85rem !important;
+    width: 100% !important;
+  }
+
+  /* Shrink touch buttons area and joystick area on mobile to prevent occupying too much screen real estate! */
+  body.playing #mobile-controls {
+    display: flex !important;
+    height: 120px !important;
+    padding: 0 15px 5px 15px !important;
+  }
+  body.playing #joystick-zone {
+    width: 90px !important;
+    height: 90px !important;
+  }
+  body.playing #joystick-base {
+    width: 75px !important;
+    height: 75px !important;
+    border-width: 1.5px !important;
+  }
+  body.playing #joystick-stick {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  body.playing #mobile-buttons {
+    gap: 6px !important;
+  }
+  body.playing .touch-btn {
+    font-size: 0.68rem !important;
+    padding: 5px 12px !important;
+    border-radius: 10px !important;
+    border-width: 1.5px !important;
+  }
+  body.playing #btn-touch-heal {
+    padding: 5px 12px !important;
+    font-size: 0.68rem !important;
+    border-radius: 10px !important;
+    border-width: 1.5px !important;
+  }
+
+  /* Tightly compress Game Over Modal on mobile landscape to prevent any screen cutoffs! */
+  body.playing .gameover-panel {
+    padding: 12px 18px !important;
+    border-radius: 16px !important;
+    max-width: 360px !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.25) !important;
+    border-color: rgba(239, 68, 68, 0.5) !important;
+  }
+  body.playing .gameover-panel h1 {
+    font-size: 1.6rem !important;
+    margin-bottom: 2px !important;
+  }
+  body.playing .gameover-panel > div:nth-child(2) { /* Current records box */
+    margin: 8px 0 !important;
+    padding: 8px 12px !important;
+    border-radius: 10px !important;
+  }
+  body.playing .gameover-panel #currTime, 
+  body.playing .gameover-panel #currCoins {
+    font-size: 1.2rem !important;
+  }
+  body.playing .gameover-panel .rank-section {
+    margin-bottom: 8px !important;
+    gap: 8px !important;
+  }
+  body.playing .gameover-panel .rank-column h3 {
+    font-size: 0.72rem !important;
+    margin-bottom: 5px !important;
+    padding-bottom: 2px !important;
+  }
+  body.playing .gameover-panel #worldRankTime, 
+  body.playing .gameover-panel #worldRankCoins {
+    font-size: 0.68rem !important;
+    line-height: 1.15 !important;
+  }
+  body.playing .gameover-panel .best-section {
+    margin-bottom: 8px !important;
+    padding: 6px !important;
+    border-radius: 8px !important;
+  }
+  body.playing .gameover-panel .best-section p {
+    font-size: 0.72rem !important;
+  }
+  body.playing .gameover-panel .btn-group-vertical button {
+    padding: 6px 10px !important;
+    font-size: 0.75rem !important;
+    margin-bottom: 6px !important;
+  }
+
+  /* Automatically hide mobile joystick & action buttons when any modal overlay (Level Up, Paused, Game Over, Shop) is active! */
+  body.level-up #mobile-controls,
+  body.paused #mobile-controls,
+  body.game-over #mobile-controls,
+  body.shop-open #mobile-controls {
+    display: none !important;
+  }
+  body.level-up #mobile-sound-btn,
+  body.paused #mobile-sound-btn,
+  body.game-over #mobile-sound-btn,
+  body.shop-open #mobile-sound-btn {
+    display: none !important;
+  }
+}
+
+/* Floating Mobile Sound / Speaker Button Style */
+#mobile-sound-btn {
+  display: none;
+  position: fixed !important;
+  top: 15px !important;
+  right: 15px !important;
+  z-index: 11000 !important;
+  background: rgba(1, 2, 8, 0.8) !important;
+  border: 1.5px solid var(--accent-cyan) !important;
+  color: #fff !important;
+  padding: 8px !important;
+  border-radius: 50% !important;
+  width: 42px !important;
+  height: 42px !important;
+  justify-content: center !important;
+  align-items: center !important;
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.45) !important;
+  font-size: 1.1rem !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+@media (max-width: 1024px) {
+  body.playing #mobile-sound-btn {
+    display: flex !important;
+  }
+}
+
+
+
