@@ -933,13 +933,12 @@
       console.warn("[Google Ads] Revive rewarded ad canceled or failed:", err);
     });
   };
-  window.startGame = () => {
+  const executeStartGame = () => {
     try {
       resize(); 
       player.x = 0; player.y = 0; player.hp = 120; player.maxHp = 120; player.xp = 0; player.level = 10; player.coins = 400; player.speed = 410; 
       player.weapon.damage = 16.1; player.xpNeeded = 53; player.ampoules = { small: 2, medium: 0, large: 0, giant: 0 };
       
-      // Auto-unlock premium weapons for testing flexibility (starts with Base Gun)
       IAP_DATA.purchasedWeapons = ["base", "2way", "4way"];
       IAP_DATA.activeWeapon = "base";
       saveIAP();
@@ -978,82 +977,39 @@
     } catch(e) { console.error("Start Game Error:", e); }
   };
 
+  window.startGame = () => {
+    if (IAP_DATA.adsRemoved) {
+      executeStartGame();
+      return;
+    }
+    
+    // Show ad if user has played a multiple of 7 games
+    if (IAP_DATA.playCount > 0 && IAP_DATA.playCount % 7 === 0) {
+      console.log("[Ad Trigger] Play count reached " + IAP_DATA.playCount + ", playing rewarded ad.");
+      window.NeonAds.showRewardedAd(() => {
+        executeStartGame();
+      }, () => {
+        executeStartGame();
+      });
+    } else {
+      executeStartGame();
+    }
+  };
+
   window.continueGame = () => {
     const session = SecureStore.loadSession();
     if (!session) { alert(t('no_saved_data')); return; }
     
-    // Create a beautiful, premium sponsored ad simulation modal!
-    const adOverlay = document.createElement('div');
-    adOverlay.id = 'sponsor-ad-overlay';
-    adOverlay.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(1, 2, 8, 0.96); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:100000; font-family:\'Outfit\', sans-serif; color:#fff; backdrop-filter:blur(20px); transition:opacity 0.3s;';
-    
-    const adContent = document.createElement('div');
-    adContent.style.cssText = 'text-align:center; padding:45px; border-radius:32px; border:2.5px solid var(--accent-cyan); box-shadow:0 0 60px rgba(34, 211, 238, 0.45); background:rgba(5, 7, 10, 0.95); max-width:420px; width:90%; position:relative;';
-    
-    const adBadge = document.createElement('div');
-    adBadge.style.cssText = 'position:absolute; top:-15px; left:50%; transform:translateX(-50%); background:var(--accent-cyan); color:#010208; font-weight:900; font-size:0.75rem; padding:6px 16px; border-radius:30px; letter-spacing:1px; box-shadow:0 0 15px var(--accent-cyan);';
-    adBadge.textContent = 'SPONSOR AD';
-    adContent.appendChild(adBadge);
-    
-    const adTitle = document.createElement('h2');
-    adTitle.style.cssText = 'color:var(--accent-amber); font-size:1.8rem; margin:15px 0 10px 0; font-weight:900; text-shadow:0 0 10px rgba(245,158,11,0.3);';
-    adTitle.textContent = window.currentLang === 'ko' ? '📺 보상형 스폰서 광고 시청' : '📺 Sponsored Sponsor Ad';
-    adContent.appendChild(adTitle);
-    
-    const adSub = document.createElement('p');
-    adSub.style.cssText = 'font-size:0.9rem; opacity:0.85; margin-bottom:15px; line-height:1.5;';
-    adSub.textContent = window.currentLang === 'ko' 
-      ? '광고 시청 후 이어서 진행됩니다. 조금만 기다려주세요!' 
-      : 'Game will load your saved data immediately after this short sponsor ad!';
-    adContent.appendChild(adSub);
-    
-    // Ad Visual Mockup
-    const adVisual = document.createElement('div');
-    adVisual.style.cssText = 'width:100%; height:130px; border-radius:16px; background:linear-gradient(135deg, #1e1b4b, #311042); border:1px solid rgba(255,255,255,0.1); margin:15px 0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; box-shadow:inset 0 0 20px rgba(0,0,0,0.5); overflow:hidden;';
-    
-    const adBrand = document.createElement('div');
-    adBrand.style.cssText = 'font-weight:900; font-size:1.3rem; color:var(--accent-cyan); text-shadow:0 0 8px var(--accent-cyan); letter-spacing:2px;';
-    adBrand.textContent = 'NEON SURVIVOR';
-    
-    const adSlogan = document.createElement('div');
-    adSlogan.style.cssText = 'font-size:0.75rem; opacity:0.7; letter-spacing:0.5px;';
-    adSlogan.textContent = 'Wolcheon Studio | Wolcheon Dream Team';
-    
-    adVisual.appendChild(adBrand);
-    adVisual.appendChild(adSlogan);
-    adContent.appendChild(adVisual);
-    
-    const adTimer = document.createElement('div');
-    adTimer.style.cssText = 'font-size:3.2rem; font-weight:900; color:var(--accent-cyan); margin:15px 0 5px 0; text-shadow:0 0 15px rgba(34, 211, 238, 0.6);';
-    adTimer.textContent = '3';
-    adContent.appendChild(adTimer);
-    
-    const adProgressContainer = document.createElement('div');
-    adProgressContainer.style.cssText = 'width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden; margin-top:10px;';
-    const adProgressBar = document.createElement('div');
-    adProgressBar.style.cssText = 'height:100%; width:0%; background:var(--accent-cyan); transition:width 1s linear;';
-    adProgressContainer.appendChild(adProgressBar);
-    adContent.appendChild(adProgressContainer);
-    
-    adOverlay.appendChild(adContent);
-    document.body.appendChild(adOverlay);
-    
-    // Start animation bar instantly
-    setTimeout(() => { adProgressBar.style.width = '100%'; }, 50);
-    
-    let secondsLeft = 3;
-    const interval = setInterval(() => {
-      secondsLeft--;
-      adTimer.textContent = secondsLeft;
-      if (secondsLeft <= 0) {
-        clearInterval(interval);
-        adOverlay.style.opacity = '0';
-        setTimeout(() => {
-          adOverlay.remove();
-          runContinueGameLogic(session);
-        }, 300);
-      }
-    }, 1000);
+    if (IAP_DATA.adsRemoved) {
+      runContinueGameLogic(session);
+      return;
+    }
+
+    window.NeonAds.showRewardedAd(() => {
+      runContinueGameLogic(session);
+    }, () => {
+      runContinueGameLogic(session);
+    });
   };
   
   function runContinueGameLogic(session) {
