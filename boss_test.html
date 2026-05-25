@@ -2,25 +2,45 @@
 <html lang="ko">
 <head>
   <script>
-    // 카카오톡 외부 브라우저(크롬/사파리) 자동 아웃링크 강제 이동 및 전용 안내 레이어 활성화
+    // 인앱 브라우저(페이스북, 인스타그램, 카카오톡, 라인) 감지 및 외부 브라우저(크롬/사파리) 이동 안내
     (function() {
       var ua = navigator.userAgent.toLowerCase();
-      if (ua.indexOf('kakaotalk') > -1) {
+      var isKakao = ua.indexOf('kakaotalk') > -1;
+      var isFacebook = ua.indexOf('fban') > -1 || ua.indexOf('fbav') > -1;
+      var isInstagram = ua.indexOf('instagram') > -1;
+      var isLine = ua.indexOf('line') > -1;
+      var isInApp = isKakao || isFacebook || isInstagram || isLine;
+
+      if (isInApp) {
         document.addEventListener("DOMContentLoaded", function() {
-          var warningEl = document.getElementById('kakaotalk-warning');
+          var warningEl = document.getElementById('inapp-browser-warning');
           if (warningEl) warningEl.style.display = 'flex';
           
-          var outlinkUrl = 'kakaotalk://web/openExternalApp?url=' + encodeURIComponent(window.location.href);
+          var outlinkUrl = '';
+          if (isKakao) {
+            outlinkUrl = 'kakaotalk://web/openExternalApp?url=' + encodeURIComponent(window.location.href);
+          } else if (/android/.test(ua)) {
+            var cleanUrl = window.location.href.replace(/^https?:\/\//, '');
+            outlinkUrl = 'intent://' + cleanUrl + '#Intent;scheme=https;package=com.android.chrome;end';
+          }
           
-          // Auto redirect after 800ms delay to allow DOM to render and prevent browser freeze
-          setTimeout(function() {
-            location.href = outlinkUrl;
-          }, 800);
+          if (outlinkUrl) {
+            setTimeout(function() {
+              location.href = outlinkUrl;
+            }, 800);
+          }
           
-          var btn = document.getElementById('btn-kakao-outlink');
+          var btn = document.getElementById('btn-inapp-outlink');
           if (btn) {
             btn.onclick = function() {
-              location.href = outlinkUrl;
+              if (outlinkUrl) {
+                location.href = outlinkUrl;
+              } else {
+                // iOS Facebook/Instagram manual guidance fallback
+                alert(window.currentLang === 'ko' ? 
+                  "아이폰(iOS)의 경우 페이스북/인스타그램 자체 앱 제약으로 자동 이동이 불가능합니다.\n\n우측 하단 나침반 아이콘이나 메뉴(점 3개 •••)를 누른 후 'Safari로 열기'를 선택하여 게임을 실행해 주세요!" : 
+                  "On iOS, auto-redirect is restricted by Facebook/Instagram.\n\nPlease tap the Compass icon in the bottom-right or the Menu (three dots •••) and select 'Open in Safari' to play!");
+              }
             };
           }
         });
@@ -50,19 +70,19 @@
 </head>
 <body>
 
-  <!-- KakaoTalk Outlink Warning Overlay -->
-  <div id="kakaotalk-warning" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#010208; z-index:999999; flex-direction:column; align-items:center; justify-content:center; padding:20px; text-align:center;">
+  <!-- In-App Browser Outlink Warning Overlay -->
+  <div id="inapp-browser-warning" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#010208; z-index:999999; flex-direction:column; align-items:center; justify-content:center; padding:20px; text-align:center; box-sizing:border-box;">
     <div style="font-size:3rem; margin-bottom:20px; animation: float 3s ease-in-out infinite;">🚀</div>
     <h2 style="color:var(--accent-cyan); font-weight:900; margin-bottom:15px; font-family:'Outfit', sans-serif;">NEON SURVIVOR: GUNSTAR</h2>
-    <p style="color:var(--text-secondary); max-width:400px; line-height:1.6; margin-bottom:30px; font-size:1.05rem;">
-      카카오톡 웹뷰에서는 게임이 원활하지 않을 수 있습니다.<br>
-      가장 쾌적하고 부드러운 플레이를 위해<br><strong>크롬(Chrome) 또는 사파리(Safari)</strong> 브라우저로 이동합니다.
+    <p style="color:var(--text-secondary); max-width:400px; line-height:1.6; margin-bottom:30px; font-size:1.05rem;" data-i18n="inapp_warning_desc">
+      인앱 브라우저(페이스북, 인스타그램, 카카오톡, 라인)에서는 화면 회전이 지원되지 않거나 게임이 원활하지 않을 수 있습니다.<br>
+      가장 쾌적한 플레이를 위해 <strong>크롬(Chrome) 또는 사파리(Safari)</strong>로 이동합니다.
     </p>
-    <button id="btn-kakao-outlink" class="btn btn-primary" style="padding:15px 40px; font-size:1.1rem; box-shadow:0 0 30px var(--accent-cyan);">
+    <button id="btn-inapp-outlink" class="btn btn-primary" data-i18n="inapp_btn_open" style="padding:15px 40px; font-size:1.1rem; box-shadow:0 0 30px var(--accent-cyan);">
       외부 브라우저로 실행하기 (PLAY NOW)
     </button>
-    <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:20px; opacity:0.6;">
-      * 이동이 안 될 경우, 우측 하단 <b>더보기(점 3개)</b> ➡️ <b>다른 브라우저로 열기</b>를 선택해 주세요.
+    <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:20px; opacity:0.6; max-width:420px; line-height:1.4;" data-i18n="inapp_warning_sub">
+      * 자동으로 이동하지 않을 경우, 우측 상단/하단 메뉴(점 3개 ••• 또는 나침반 아이콘)를 누른 후 <b>'브라우저로 열기'</b> 또는 <b>'Safari로 열기'</b>를 선택해 주세요.
     </p>
   </div>
 

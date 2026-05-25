@@ -103,7 +103,11 @@ const I18N = {
     "dual_gun": "Dual Gun",
     "quad_gun": "Quad Gun",
     "rotate_screen_title": "LANDSCAPE ONLY",
-    "rotate_screen_desc": "Please rotate your device to <strong>Landscape (horizontal)</strong> mode for the best gaming experience!"
+    "rotate_screen_desc": "Please rotate your device to <strong>Landscape (horizontal)</strong> mode for the best gaming experience!",
+    "inapp_warning_title": "Open in External Browser",
+    "inapp_warning_desc": "In-app browsers (Facebook, Instagram, KakaoTalk, LINE) do not support screen rotation and may run slowly.<br>Please open in <strong>Chrome</strong> or <strong>Safari</strong> for the best gameplay.",
+    "inapp_btn_open": "PLAY IN EXTERNAL BROWSER",
+    "inapp_warning_sub": "* If it doesn't open automatically, click the <b>Menu (three dots ••• or Compass icon)</b> and select <b>'Open in Browser'</b> or <b>'Open in Safari'</b>."
   },
   ko: {
     "hero_sub": "전설적인 에이전트 '건스타'가 되어<br>끝없이 몰려오는 우주 괴수들로부터 살아남으세요.<br>당신만이 인류의 마지막 희망입니다.",
@@ -208,15 +212,33 @@ const I18N = {
     "dual_gun": "듀얼 건",
     "quad_gun": "쿼드 건",
     "rotate_screen_title": "가로 모드 전용 게임",
-    "rotate_screen_desc": "더 나은 몰입감을 위해 스마트폰을 <strong>가로(Landscape)</strong>로 회전해주세요!"
+    "rotate_screen_desc": "더 나은 몰입감을 위해 스마트폰을 <strong>가로(Landscape)</strong>로 회전해주세요!",
+    "inapp_warning_title": "외부 브라우저 실행 안내",
+    "inapp_warning_desc": "인앱 브라우저(페이스북, 인스타그램, 카카오톡, 라인)에서는 화면 회전이 지원되지 않거나 게임이 원활하지 않을 수 있습니다.<br>가장 쾌적한 플레이를 위해 <strong>크롬(Chrome) 또는 사파리(Safari)</strong>로 이동합니다.",
+    "inapp_btn_open": "외부 브라우저로 실행하기",
+    "inapp_warning_sub": "* 자동으로 이동하지 않을 경우, 우측 상단/하단 메뉴(점 3개 ••• 또는 나침반 아이콘)를 누른 후 <b>'브라우저로 열기'</b> 또는 <b>'Safari로 열기'</b>를 선택해 주세요."
   }
 };
 
 let savedLang = 'en';
 try {
-  savedLang = localStorage.getItem('ns_lang') || 'ko';
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlLang = urlParams.get('lang');
+  if (urlLang && (urlLang === 'en' || urlLang === 'ko')) {
+    savedLang = urlLang;
+    try { localStorage.setItem('ns_lang', savedLang); } catch(e){}
+  } else {
+    const localLang = localStorage.getItem('ns_lang');
+    if (localLang && (localLang === 'en' || localLang === 'ko')) {
+      savedLang = localLang;
+    } else {
+      const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+      savedLang = browserLang.startsWith('ko') ? 'ko' : 'en';
+    }
+  }
 } catch (e) {
-  console.warn("Storage read failed (sandboxed or local file origin), defaulting to 'ko'.");
+  const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+  savedLang = browserLang.startsWith('ko') ? 'ko' : 'en';
 }
 window.currentLang = savedLang;
 
