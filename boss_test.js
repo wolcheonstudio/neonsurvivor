@@ -923,6 +923,7 @@
     window.NeonAds.showRewardedAd(() => {
       player.hp = player.maxHp; player.iframe = 2.0; state.gameOver = false; gameoverModal.classList.add('hidden');
       document.body.classList.add('playing');
+      document.body.classList.remove('game-over');
       const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       if (isMobileDevice) {
         document.body.classList.add('lock-scroll');
